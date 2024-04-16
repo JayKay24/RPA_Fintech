@@ -1,5 +1,5 @@
-import PDFMerger from './PDFMerger';
-import { getPaths } from './getPaths';
+const PDFMerger = require('pdf-merger-js');
+const { getPaths } = require('./getPaths');
 
 async function main() {
   const [pdf1, pdf2] = getPaths();
