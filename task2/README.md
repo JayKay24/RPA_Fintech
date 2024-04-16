@@ -13,3 +13,5 @@ This is a command line utility to merge two pdfs together
 ```
 $ pdf-merger <pdf1> <pdf2>
 ```
+
+This will create a pdf called `merged.pdf` in your current working directory.
