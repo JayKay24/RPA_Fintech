@@ -17,5 +17,6 @@
   "homepage": "https://github.com/JayKay24/RPA_Fintech#readme",
   "dependencies": {
     "pdf-merger-js": "^5.1.1"
-  }
+  },
+  "type": "module"
 }

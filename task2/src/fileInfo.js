@@ -1,5 +1,5 @@
-const { access, stat } = require('fs/promises');
-const { constants: fsConstants } = require('fs');
+import { access, stat } from 'fs/promises';
+import { constants as fsConstants } from 'fs';
 
 async function isFileAccessible(file) {
   try {
@@ -17,4 +17,4 @@ async function isFileAccessible(file) {
   }
 }
 
-module.exports = { isFileAccessible }
+export default isFileAccessible;
