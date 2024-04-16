@@ -1,0 +1,21 @@
+{
+  "name": "pdf-merger",
+  "version": "1.0.0",
+  "description": "merge two pdf docs",
+  "bin": {
+    "pdf-merger": "bin/pdfMerger.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JayKay24/RPA_Fintech.git"
+  },
+  "author": "James Kinyua",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JayKay24/RPA_Fintech/issues"
+  },
+  "homepage": "https://github.com/JayKay24/RPA_Fintech#readme",
+  "dependencies": {
+    "pdf-merger-js": "^5.1.1"
+  }
+}
