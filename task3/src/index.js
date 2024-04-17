@@ -1,5 +1,6 @@
 import getPaths from './getPaths.js';
 import { convertToImage, getNumPages } from './convertToImage.js';
+import getTextFromImage from './getTextFromImage.js';
 
 
 async function main() {
@@ -15,11 +16,13 @@ async function main() {
     imageFiles.push(await convertToImage(inputFile, i));
   }
 
-  console.log(imageFiles);
+  const allData = [];
 
-  // const imageText = await getTextFromImage(imageFile);
+  for (const imageFile of imageFiles) {
+    allData.push(await getTextFromImage(imageFile));
+  }
 
-  // const items = await parsePdf(inputFile);
+  console.log('allData here!!!', allData);
 }
 
 main();
