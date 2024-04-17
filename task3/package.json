@@ -18,6 +18,10 @@
   "private": "true",
   "type": "module",
   "dependencies": {
-    "pdfreader": "^3.0.2"
+    "jimp": "^0.22.12",
+    "pdf-page-counter": "^1.0.3",
+    "pdf2pic": "^3.1.1",
+    "pdfreader": "^3.0.2",
+    "tesseract.js": "^5.0.5"
   }
 }

@@ -1,24 +1,25 @@
-import { PdfReader } from 'pdfreader';
-import { readFile } from 'fs/promises';
-import { promisify } from 'util';
 import getPaths from './getPaths.js';
+import { convertToImage, getNumPages } from './convertToImage.js';
+
 
 async function main() {
   const filePaths = await getPaths();
   const inputFile = filePaths[0],
     outputFile = filePaths[1] ?? 'output.pdf';
 
-  const pdfReader = new PdfReader();
-  const unBoundParseFileItems = await promisify(pdfReader.parseFileItems);
-  const parseFileItems = unBoundParseFileItems.bind(pdfReader);
+  const numPages = await getNumPages(inputFile);
 
-  try {
-    const fileItems = await parseFileItems(inputFile);
-    console.log(fileItems);
-  } catch (error) {
-    console.log('Unable to parse pdf file:', inputFile);
-    console.error(error);
+  const imageFiles = [];
+
+  for (let i = 1; i <= numPages; i++) {
+    imageFiles.push(await convertToImage(inputFile, i));
   }
+
+  console.log(imageFiles);
+
+  // const imageText = await getTextFromImage(imageFile);
+
+  // const items = await parsePdf(inputFile);
 }
 
 main();
