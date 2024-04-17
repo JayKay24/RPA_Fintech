@@ -1,0 +1,23 @@
+{
+  "name": "korean-to-english",
+  "version": "1.0.0",
+  "description": "convert pdf text from korean to english",
+  "bin": {
+    "korean-to-english": "bin/koreanToEnglish.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JayKay24/RPA_Fintech.git"
+  },
+  "author": "James Kinyua",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JayKay24/RPA_Fintech/issues"
+  },
+  "homepage": "https://github.com/JayKay24/RPA_Fintech#readme",
+  "private": "true",
+  "type": "module",
+  "dependencies": {
+    "pdfreader": "^3.0.2"
+  }
+}
