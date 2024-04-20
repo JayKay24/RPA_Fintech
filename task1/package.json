@@ -1,0 +1,27 @@
+{
+  "name": "extract-pdf",
+  "version": "1.0.0",
+  "description": "scrape and extract pdf from a website",
+  "main": "index.js",
+  "bin": {
+    "extract-pdf": "bin/extractPdf.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JayKay24/RPA_Fintech.git"
+  },
+  "author": "James Kinyua",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JayKay24/RPA_Fintech/issues"
+  },
+  "homepage": "https://github.com/JayKay24/RPA_Fintech#readme",
+  "dependencies": {
+    "puppeteer": "^22.6.5"
+  },
+  "type": "module",
+  "private": "true"
+}

@@ -19,10 +19,14 @@ async function main() {
   const allData = [];
 
   for (const imageFile of imageFiles) {
-    allData.push(await getTextFromImage(imageFile));
+    allData.push((await getTextFromImage(imageFile)));
   }
 
-  console.log('allData here!!!', allData);
+  for (const obj of allData) {
+    console.log(Object.getOwnPropertyNames(obj));
+  }
+
+  // console.log('allData here!!!', allData);
 }
 
 main();

@@ -132,3 +132,4 @@ dist
 *.pdf
 **/images/
 *.traineddata
+*.png
