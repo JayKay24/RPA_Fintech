@@ -17,30 +17,19 @@ async function main() {
 
   await waitForLoadingToDissapear('.loadingWrap', page);
 
-  await page.screenshot({ path: 'screenshot_after_login.png', fullPage: true });
+  await clickAndWaitForNavigationToPage(page, null, false, '.registerUi .bldreDiv.bldre1 p');
 
-  const issuanceBuildingLedger = await page.$('.bldreDiv.bldre1 a');
-
-  await clickAndWaitForNavigationToPage(page, issuanceBuildingLedger);
-
-  // await waitForLoadingToDissapear('.loadingWrap', page);
-
-  await page.screenshot({ path: 'screenshot_issuance.png', fullPage: true });
+  await waitForLoadingToDissapear('.loadingWrap', page);
 
   const searchByAddressNoBtn = await page.$('.AddrSearch .btnLotNum');
-  console.log('search by address here!!', searchByAddressNoBtn);
   await searchByAddressNoBtn.click();
 
-  // const buildingLocation = await page.$('.searchBuilding .multiselect__input');
-  // await buildingLocation.type(config.BUILDING_LOCATION, { delay: config.TYPING_DELAY });
-
-  await page.screenshot({ path: 'screenshot.png', fullPage: true });
   await browser.close();
 }
 
 async function getConfiguredPage() {
   // setup puppeteer
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ ...config.BROWSER_OPTIONS });
   const page = await browser.newPage();
   page.setDefaultTimeout(config.PAGE_TIMEOUT);
 
@@ -53,11 +42,18 @@ async function waitForLoadingToDissapear(loadingImgSelector, page) {
   await page.waitForFunction(waitLoadingImg, { timeout: config.WAITFORFUNCTION_TIMEOUT }, loadingImgSelector);
 }
 
-async function clickAndWaitForNavigationToPage(page, element) {
-  await Promise.all([
-    page.waitForNavigation(),
-    element.click()
-  ]);
+async function clickAndWaitForNavigationToPage(page, element, isInView = true, selector = '') {
+  if (isInView) {
+    await Promise.all([
+      page.waitForNavigation(),
+      element.click()
+    ]);
+  } else {
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click(selector)
+    ]);
+  }
 }
 
 async function loginToSite(page) {
