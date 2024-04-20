@@ -2,27 +2,22 @@ import puppeteer from 'puppeteer';
 import config from './config.js';
 
 async function main() {
-  const page = await getConfiguredPage();
+  const [browser, page] = await getConfiguredPage();
 
   await page.goto(config.BASE_URL, { waitUntil: 'load' });
 
-  const modalBtn = await page.$('.noticeClose .btnClose');
-  await modalBtn.click();
-
   const loginBtn = await page.$('.headerBtn .btnLogin');
-
-  await clickAndWaitForNavigationToPage(page, loginBtn);
+  if (!loginBtn) quitProgramWithErrorMessage('login button not found');
 
   await loginToSite(page);
 
-  await waitForLoadingToDissapear('.loadingWrap', page);
-
   await clickAndWaitForNavigationToPage(page, null, false, '.registerUi .bldreDiv.bldre1 p');
 
-  await waitForLoadingToDissapear('.loadingWrap', page);
-
   const searchByAddressNoBtn = await page.$('.AddrSearch .btnLotNum');
+  if (!searchByAddressNoBtn) quitProgramWithErrorMessage('search by address number button not found');
   await searchByAddressNoBtn.click();
+
+  await page.screenshot({ path: 'screenshot.jpeg', fullPage: true, quality: 100 });
 
   await browser.close();
 }
@@ -33,26 +28,43 @@ async function getConfiguredPage() {
   const page = await browser.newPage();
   page.setDefaultTimeout(config.PAGE_TIMEOUT);
 
-  return page;
+  page.on('dialog', async (dialog) => {
+    console.log(dialog.message());
+    await dialog.dismiss();
+  });
+
+  return [browser, page];
 }
 
 async function waitForLoadingToDissapear(loadingImgSelector, page) {
   const waitLoadingImg = selector => document.querySelector(selector) === null;
 
-  await page.waitForFunction(waitLoadingImg, { timeout: config.WAITFORFUNCTION_TIMEOUT }, loadingImgSelector);
+  await page.waitForFunction(waitLoadingImg, { timeout: config.WAITFOR_TIMEOUT }, loadingImgSelector);
 }
 
 async function clickAndWaitForNavigationToPage(page, element, isInView = true, selector = '') {
   if (isInView) {
-    await Promise.all([
-      page.waitForNavigation(),
-      element.click()
-    ]);
+    try {
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'load' }),
+        element.click()
+      ]);
+  
+      await waitForLoadingToDissapear('.loadingWrap', page);
+    } catch (error) {
+      quitProgramWithErrorMessage(error);
+    }
   } else {
-    await Promise.all([
-      page.waitForNavigation(),
-      page.click(selector)
-    ]);
+    try {
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'load' }),
+        page.click(selector)
+      ]);
+
+      await waitForLoadingToDissapear('.loadingWrap', page);
+    } catch (error) {
+      quitProgramWithErrorMessage(error);
+    }
   }
 }
 
@@ -65,6 +77,11 @@ async function loginToSite(page) {
   await loginPwd.type(config.LOGIN_PASSWORD, { delay: config.TYPING_DELAY });
 
   await clickAndWaitForNavigationToPage(page, formLoginBtn);
+}
+
+function quitProgramWithErrorMessage(error) {
+  console.error(error);
+  process.exit(1);
 }
 
 main();
