@@ -7,6 +7,7 @@ import fillInAddressNumberForm from './fillAddressNoForm.js';
 import waitForReadyState from './waitForReadyState.js';
 
 async function main() {
+  const start = Date.now();
   const [browser, page] = await getConfiguredPage();
 
   await page.goto(config.BASE_URL, { waitUntil: 'load' });
@@ -82,14 +83,20 @@ async function main() {
   );
   await printIcon.click();
 
-  const printBtn = await pdfTabPage.waitForSelector(
+  await pdfTabPage.waitForSelector(
     '.report_print_view_position.report_view_box button[title="인쇄"]',
     { timeout: config.WAITFOR_TIMEOUT }
   );
 
-  await pdfTabPage.screenshot({ path: 'screenshot.jpeg', fullPage: true, quality: 100, type: 'jpeg' });
+  // await pdfTabPage.screenshot({ path: 'screenshot.jpeg', fullPage: true, quality: 100, type: 'jpeg' });
 
-  await printBtn.click();
+  // await printBtn.click();
+
+  const end = Date.now();
+
+  const difference = (end - start) / 1000;
+
+  console.log('Time elapsed in seconds:', difference);
 
   await browser.close();
 }
