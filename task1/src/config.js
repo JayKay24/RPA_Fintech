@@ -1,3 +1,5 @@
+import puppeteer from 'puppeteer';
+
 const threeMins = 3 * 60 * 1000;
 const infinite = 0;
 
@@ -21,4 +23,18 @@ const config = {
   }
 };
 
-export default config;
+async function getConfiguredPage() {
+  // setup puppeteer
+  const browser = await puppeteer.launch({ ...config.BROWSER_OPTIONS });
+  const page = await browser.newPage();
+  page.setDefaultTimeout(config.PAGE_TIMEOUT);
+
+  page.on('dialog', async (dialog) => {
+    console.log(dialog.message());
+    await dialog.dismiss();
+  });
+
+  return [browser, page];
+}
+
+export { config, getConfiguredPage };
