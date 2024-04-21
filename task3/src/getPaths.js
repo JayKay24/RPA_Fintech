@@ -11,6 +11,7 @@ async function getPaths() {
   const files = cmdArgs.slice(2);
 
   for (const file of files) {
+    // if (!isNaN(parseInt(file))) continue;
     await isFileAccessible(file);
   }
 

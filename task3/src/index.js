@@ -1,32 +1,81 @@
+import { TranslationServiceClient } from '@google-cloud/translate';
+import { Storage } from '@google-cloud/storage';
+import fs from 'fs';
 import getPaths from './getPaths.js';
 import { convertToImage, getNumPages } from './convertToImage.js';
 import getTextFromImage from './getTextFromImage.js';
+import config from './config.js';
 
 
 async function main() {
   const filePaths = await getPaths();
-  const inputFile = filePaths[0],
-    outputFile = filePaths[1] ?? 'output.pdf';
+  let inputFile = filePaths[0],
+    outputFile = filePaths[1] ?? 'output.pdf'
 
-  const numPages = await getNumPages(inputFile);
+  const storage = await uploadFile(inputFile);
 
-  const imageFiles = [];
+  await callTranslateDocument(inputFile, outputFile);
 
-  for (let i = 1; i <= numPages; i++) {
-    imageFiles.push(await convertToImage(inputFile, i));
-  }
+  await storage
+    .bucket(config.storageOpts.bucketName)
+    .file(outputFile)
+    .download({ destination: outputFile });
+  
+  console.log(`File ${outputFile} stored to locally at ${outputFile}`);
+}
 
-  const allData = [];
+async function callTranslateDocument(inputFile, outputFile) {
+  const request = {
+    ...config.translateOpts,
+    inputConfigs: [
+      {
+        mimeType: 'application/pdf',
+        gcsSource: {
+          inputUri: `gs://${config.storageOpts.bucketName}/${inputFile}`,
+        },
+      }
+    ],
+    outputConfigs: {
+      gcsDestination: {
+        outputUriPrefix: `gs://${config.storageOpts.bucketName}/${outputFile}`,
+      }
+    }
+  };
 
-  for (const imageFile of imageFiles) {
-    allData.push((await getTextFromImage(imageFile)));
-  }
+  const translationClient = new TranslationServiceClient();
 
-  for (const obj of allData) {
-    console.log(Object.getOwnPropertyNames(obj));
-  }
+  const [operation] = await translationClient.batchTranslateDocument(request);
+  const [response] = await operation.promise();
 
-  // console.log('allData here!!!', allData);
+  console.log('response here', response);
+}
+
+async function uploadFile(inputFile) {
+  return new Promise((resolve, reject) => {
+    const projectId = config.projectId;
+    const bucketName = config.bucketName;
+
+    const storage = new Storage({ projectId });
+    const bucket = storage.bucket(bucketName);
+    const blob = bucket.file(inputFile);
+    const blobStream = blob.createWriteStream();
+
+    fs.createReadStream(inputFile).pipe(blobStream);
+
+    blobStream.on('error', err => {
+      console.log('Unable to store file to cloud storage');
+      console.error(err);
+      reject(err);
+      process.exit(1);
+    });
+
+    blobStream.on('finish', () => {
+      console.log(`File ${outputFile} stored to cloud storage`);
+      resolve(storage);
+    });
+
+    resolve();
+  });
 }
 
 main();
