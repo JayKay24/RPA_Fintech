@@ -4,6 +4,7 @@ import loginToSite from './loginToSite.js';
 import waitForLoadingToVanish from './waitForLoadingToVanish.js';
 import clickAndWaitForNavigation from './clickAndWaitForNavigation.js';
 import fillInAddressNumberForm from './fillAddressNoForm.js';
+import waitForReadyState from './waitForReadyState.js';
 
 async function main() {
   const [browser, page] = await getConfiguredPage();
@@ -55,43 +56,40 @@ async function main() {
 
   await waitForLoadingToVanish('.loadingWrap', page);
 
-  await page.screenshot({ path:'screenshot_final.jpeg', fullPage: true, quality: 100 });
-
   const firstIssued = await page.waitForSelector('.tableScroll tbody tr td a[title="발급"]', { timeout: config.WAITFOR_TIMEOUT });
   await firstIssued.click();
 
-  const newWindowTarget = await browser.waitForTarget((target) => {
+  const newWindowTarget = await browser.waitForTarget(async (target) => {
     if (target.type() !== 'page') return false;
 
-    console.log('target here!!', target);
-    const page = target.page();
-    console.log('page here!!', page);
+    const page = await target.page();
     const urlToParse = page.url();
-    console.log('urlToParse here!!', urlToParse);
     const url = new URL(urlToParse);
     const regex = /report/;
 
     return regex.test(url.pathname);
   }, { timeout: config.WAITFOR_TIMEOUT });
 
-  console.log('I'.repeat(7));
-
   const pdfTabPage = await newWindowTarget.page();
-  const printIcon = await pdfTabPage.waitForSelector('#re_printc15e530a2dab14b4cb8923fa985ed5f42', { timeout: config.WAITFOR_TIMEOUT });
+
+  await waitForReadyState(pdfTabPage);
+
+  await pdfTabPage.pdf({ path: 'complaint.pdf', printBackground: true, format: 'A4' });
+
+  const printIcon = await pdfTabPage.waitForSelector(
+    '[title="인쇄"].report_menu_button.report_menu_print_button.report_menu_print_button_svg',
+    { timeout: config.WAITFOR_TIMEOUT }
+  );
   await printIcon.click();
 
-  console.log('J'.repeat(7));
+  const printBtn = await pdfTabPage.waitForSelector(
+    '.report_print_view_position.report_view_box button[title="인쇄"]',
+    { timeout: config.WAITFOR_TIMEOUT }
+  );
 
-  const printBtn = await pdfTabPage.waitForSelector('.report_popup_view button[title="인쇄"]');
+  await pdfTabPage.screenshot({ path: 'screenshot.jpeg', fullPage: true, quality: 100, type: 'jpeg' });
+
   await printBtn.click();
-
-  console.log('K'.repeat(7));
-
-  await pdfTabPage.waitForTimeout(config.PDF_TIMEOUT_SAVE);
-
-  await pdfTabPage.screenshot({ path: 'screenshot_pdf.jpeg', fullPage: true, quality: 100 });
-
-  console.log('L'.repeat(7));
 
   await browser.close();
 }
