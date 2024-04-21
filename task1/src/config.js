@@ -1,8 +1,10 @@
 const threeMins = 3 * 60 * 1000;
+const infinite = 0;
 
 const config = {
   PAGE_TIMEOUT: threeMins,
-  WAITFOR_TIMEOUT: threeMins,
+  WAITFOR_TIMEOUT: infinite,
+  PDF_TIMEOUT_SAVE: 2 * 1000,
   LOGIN_ID: 'ohk5004',
   LOGIN_PASSWORD: 'MufinNumber1',
   // BASE_URL: 'https://cloud.eais.go.kr/',
@@ -12,9 +14,10 @@ const config = {
   BROWSER_OPTIONS: { 
     headless: false,
     defaultViewport: {
-      width: 1366,
-      height: 768,
+      width: 1920,
+      height: 1080,
     },
+    args: ['--start-fullscreen']
   }
 };
 

@@ -133,3 +133,4 @@ dist
 **/images/
 *.traineddata
 *.png
+*.jpeg
