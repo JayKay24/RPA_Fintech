@@ -1,7 +1,7 @@
 {
-  "name": "extract-pdf",
+  "name": "crawl-site",
   "version": "1.0.0",
-  "description": "scrape and extract pdf from a website",
+  "description": "crawl and reach pdf from a website",
   "main": "index.js",
   "bin": {
     "crawl-site": "bin/crawlSite.js"
