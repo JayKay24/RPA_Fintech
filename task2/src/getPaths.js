@@ -1,3 +1,4 @@
+import { extname } from 'path';
 import isFileAccessible from './fileInfo.js';
 
 async function getPaths() {
