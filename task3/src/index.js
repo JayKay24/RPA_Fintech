@@ -2,8 +2,6 @@ import { TranslationServiceClient } from '@google-cloud/translate';
 import { Storage } from '@google-cloud/storage';
 import fs from 'fs';
 import getPaths from './getPaths.js';
-import { convertToImage, getNumPages } from './convertToImage.js';
-import getTextFromImage from './getTextFromImage.js';
 import config from './config.js';
 
 
@@ -11,7 +9,7 @@ async function main() {
   const filePaths = await getPaths();
   let inputFile = filePaths[0];
 
-  const storage = await uploadFile(inputFile);
+  await uploadFile(inputFile);
 
   await sleep();
 
@@ -21,12 +19,13 @@ async function main() {
 
   const outputFile = `${config.storageOpts.projectId}-object-store_${inputFileWithoutExtension}_${config.translateOpts.targetLanguageCode}_translations.${ext}`;
 
-  console.log('output file: ' + outputFile);
+  const storage = new Storage(),
+    bucketName = config.storageOpts.bucketName,
+    downloadOpts = {
+      destination: outputFile,
+    }
 
-  await storage
-    .bucket(config.storageOpts.bucketName)
-    .file(outputFile)
-    .download({ destination: outputFile });
+  await storage.bucket(bucketName).file(outputFile).download(downloadOpts);
   
   console.log(`${outputFile} stored to locally at: ${outputFile}`);
 }

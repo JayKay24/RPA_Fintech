@@ -1,4 +1,4 @@
-import path from 'path';
+import { extname } from 'path';
 import isFileAccessible from './fileInfo.js';
 
 async function getPaths() {
@@ -15,7 +15,7 @@ async function getPaths() {
     await isFileAccessible(file);
   }
 
-  if (path.extname(files[1]) !== '.pdf') {
+  if (extname(files[0]) !== '.pdf') {
     console.log('file format should be pdf');
     process.exit(1);
   }
