@@ -11,6 +11,11 @@ async function getPaths() {
   const files = cmdArgs.slice(2);
 
   for (const file of files) {
+    if (extname(file) !== '.pdf') {
+      console.log('file format should be pdf');
+      process.exit(1);
+    }
+
     await isFileAccessible(file);
   }
 
