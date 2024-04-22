@@ -4,7 +4,7 @@
   "description": "scrape and extract pdf from a website",
   "main": "index.js",
   "bin": {
-    "extract-pdf": "bin/extractPdf.js"
+    "crawl-site": "bin/crawlSite.js"
   },
   "repository": {
     "type": "git",
