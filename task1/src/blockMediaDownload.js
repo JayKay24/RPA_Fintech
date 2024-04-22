@@ -3,8 +3,12 @@ async function blockMediaDownLoad(page) {
 
   page.on('request', (request) => {
     if (
+      request.url().endsWith('.woff') ||
+      request.url().endsWith('.woff2') ||
       request.resourceType() ==='media' ||
+      request.resourceType() ==='texttrack' ||
       request.resourceType() === 'image' ||
+      // request.resourceType() === 'stylesheet' ||
       request.resourceType() === 'other' && request.url().endsWith('.exe')
     ) {
       request.abort();

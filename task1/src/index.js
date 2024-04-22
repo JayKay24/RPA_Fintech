@@ -76,7 +76,7 @@ async function main() {
 
   pdfTabPage = await blockMediaDownLoad(pdfTabPage);
 
-  await pdfTabPage.setRequestInterception(true)
+  await pdfTabPage.setRequestInterception(true);
 
   await waitForReadyState(pdfTabPage);
 
@@ -93,7 +93,7 @@ async function main() {
     { timeout: config.WAITFOR_TIMEOUT }
   );
 
-  await pdfTabPage.screenshot({ path: 'screenshot_last.jpeg', fullPage: true, quality: 100, type: 'jpeg' });
+  // await pdfTabPage.screenshot({ path: 'screenshot_last.jpeg', fullPage: true, quality: 100, type: 'jpeg' });
 
   // await printBtn.click();
 
