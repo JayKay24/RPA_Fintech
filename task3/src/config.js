@@ -1,9 +1,11 @@
 const projectId = 'must-rpa';
 const bucketName = 'must-rpa-object-store';
+const projectNumber = 726345247931;
+
 
 const config = {
   translateOpts: {
-    parent: 'projects/726345247931',
+    parent: `projects/${projectNumber}/locations/global`,
     targetLanguageCode: 'en',
     sourceLanguageCode: 'ko',
     inputConfigs: [
@@ -18,12 +20,13 @@ const config = {
       gcsDestination: {
         outputUriPrefix: '',
       }
-    }
+    },
   },
   storageOpts: {
     projectId,
     bucketName,
-  }
+  },
+  sleepFor: 10 * 1000,
 };
 
 export default config;

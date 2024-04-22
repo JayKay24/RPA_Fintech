@@ -9,51 +9,65 @@ import config from './config.js';
 
 async function main() {
   const filePaths = await getPaths();
-  let inputFile = filePaths[0],
-    outputFile = filePaths[1] ?? 'output.pdf'
+  let inputFile = filePaths[0];
 
   const storage = await uploadFile(inputFile);
 
-  await callTranslateDocument(inputFile, outputFile);
+  await sleep();
+
+  await callTranslateDocument(inputFile);
+
+  const [inputFileWithoutExtension, ext] = inputFile.split('.');
+
+  const outputFile = `${config.storageOpts.projectId}-object-store_${inputFileWithoutExtension}_${config.translateOpts.targetLanguageCode}_translations.${ext}`;
+
+  console.log('output file: ' + outputFile);
 
   await storage
     .bucket(config.storageOpts.bucketName)
     .file(outputFile)
     .download({ destination: outputFile });
   
-  console.log(`File ${outputFile} stored to locally at ${outputFile}`);
+  console.log(`${outputFile} stored to locally at: ${outputFile}`);
 }
 
-async function callTranslateDocument(inputFile, outputFile) {
-  const request = {
-    ...config.translateOpts,
-    inputConfigs: [
-      {
-        mimeType: 'application/pdf',
-        gcsSource: {
-          inputUri: `gs://${config.storageOpts.bucketName}/${inputFile}`,
-        },
-      }
-    ],
-    outputConfigs: {
-      gcsDestination: {
-        outputUriPrefix: `gs://${config.storageOpts.bucketName}/${outputFile}`,
-      }
-    }
-  };
+main();
 
+async function sleep() {
+  return new Promise((resolve, reject) => {
+    console.log('sleeping...');
+    setTimeout(() => {
+      console.log('awake now');
+      resolve();
+    }, config.sleepFor);
+  });
+}
+
+async function callTranslateDocument(inputFile) {
   const translationClient = new TranslationServiceClient();
 
-  const [operation] = await translationClient.batchTranslateDocument(request);
-  const [response] = await operation.promise();
+  const request = {
+    parent: translationClient.locationPath(config.storageOpts.projectId, 'global'),
+    documentInputConfig: {
+      gcsSource: {
+        inputUri: `gs://${config.storageOpts.bucketName}/${inputFile}`,
+      },
+    },
+    documentOutputConfig: {
+      gcsDestination: {
+        outputUriPrefix: `gs://${config.storageOpts.bucketName}/`,
+      },
+    },
+    targetLanguageCode: 'en',
+  };
 
-  console.log('response here', response);
+  await translationClient.translateDocument(request);
 }
 
 async function uploadFile(inputFile) {
   return new Promise((resolve, reject) => {
-    const projectId = config.projectId;
-    const bucketName = config.bucketName;
+    const projectId = config.storageOpts.projectId;
+    const bucketName = config.storageOpts.bucketName;
 
     const storage = new Storage({ projectId });
     const bucket = storage.bucket(bucketName);
@@ -70,12 +84,10 @@ async function uploadFile(inputFile) {
     });
 
     blobStream.on('finish', () => {
-      console.log(`File ${outputFile} stored to cloud storage`);
+      console.log(`File ${inputFile} stored to cloud storage`);
       resolve(storage);
     });
 
     resolve();
   });
 }
-
-main();
