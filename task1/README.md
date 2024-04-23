@@ -1,4 +1,4 @@
-# Task 1
+# Task 1 Command Line Interface
 
 This is a command line utility to automatically crawl and perform tasks at the website -> https://cloud.eais.go.kr/
 
@@ -10,7 +10,7 @@ Download and install the latest version of chrome [here](https://www.google.com/
 
 ## Installation
 
-1. From the root of this repository, run `cd task1`;
+1. From the root of this repository, run `cd task1/cmd_line`;
 2. `npm install`
 3. `npm link`
 
