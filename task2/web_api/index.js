@@ -35,13 +35,15 @@ server.post('/upload', async (req, reply) => {
   reply.send(await merger.saveAsBuffer());
 });
 
-const start = async () => {
-  try {
-    await server.listen({ port: 3000 });
-  } catch (error) {
-    server.log.error(error);
-    process.exit(1);
-  }
-};
+// const start = async () => {
+//   try {
+//     await server.listen({ port: 3000 });
+//   } catch (error) {
+//     server.log.error(error);
+//     process.exit(1);
+//   }
+// };
 
-start();
+// start();
+
+export default server;
