@@ -1,4 +1,4 @@
 import ServerlessHttp from 'serverless-http';
-import server from '..';
+import server from '../..';
 
 export default ServerlessHttp(server);
