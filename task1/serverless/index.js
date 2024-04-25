@@ -6,8 +6,9 @@ import clickAndWaitForNavigation from './clickAndWaitForNavigation.js';
 import fillInAddressNumberForm from './fillAddressNoForm.js';
 import waitForReadyState from './waitForReadyState.js';
 import blockMediaDownLoad from './blockMediaDownload.js';
+import sendEmail from './sentEmail.js';
 
-async function main() {
+async function main(email) {
   const start = Date.now();
   const [browser, page] = await getConfiguredPage();
 
@@ -93,7 +94,9 @@ async function main() {
     { timeout: config.WAITFOR_TIMEOUT }
   );
 
-  // await pdfTabPage.screenshot({ path: 'screenshot_last.jpeg', fullPage: true, quality: 100, type: 'jpeg' });
+  const buffer = await pdfTabPage.screenshot({ fullPage: true });
+
+  await sendEmail(email, buffer);
 
   // await printBtn.click();
 
