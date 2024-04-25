@@ -9,11 +9,8 @@
   "keywords": [],
   "author": "James Kinyua",
   "license": "ISC",
+  "type": "module",
   "dependencies": {
-    "@fastify/multipart": "^8.2.0",
-    "fastify": "^4.26.2",
-    "pdf-merger-js": "^5.1.1",
-    "serverless-http": "^3.2.0"
-  },
-  "type": "module"
+    "pdf-merger-js": "^5.1.1"
+  }
 }
