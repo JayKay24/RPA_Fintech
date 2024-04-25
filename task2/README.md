@@ -4,7 +4,7 @@ This is a command line utility to merge two pdfs together
 
 ## Installation
 
-1. From the root of this repository, run `cd task2`;
+1. From the root of this repository, run `cd task2/cmd_line`;
 2. `npm install`
 3. `npm link`
 
