@@ -14,13 +14,4 @@ async function mergePdfs(formData) {
   return buffer;
 }
 
-async function blobToBuffer(blob) {
-  return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-      reader.readAsArrayBuffer(blob);
-  });
-}
-
 export default mergePdfs;
